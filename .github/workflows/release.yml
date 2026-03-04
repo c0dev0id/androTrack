@@ -71,9 +71,20 @@ jobs:
         id: rename
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          mv app/build/outputs/apk/release/app-release.apk \
-             "app/build/outputs/apk/release/androTrackApp-${VERSION}.apk"
-          echo "apk_path=app/build/outputs/apk/release/androTrackApp-${VERSION}.apk" >> "$GITHUB_OUTPUT"
+          SIGNED_APK="app/build/outputs/apk/release/app-release.apk"
+          UNSIGNED_APK="app/build/outputs/apk/release/app-release-unsigned.apk"
+          if [ -f "$SIGNED_APK" ]; then
+            APK_SOURCE="$SIGNED_APK"
+          elif [ -f "$UNSIGNED_APK" ]; then
+            echo "::error::Build produced an unsigned APK. Please configure signing secrets (SIGNING_KEYSTORE_BASE64, SIGNING_KEYSTORE_PASSWORD, SIGNING_KEY_ALIAS, SIGNING_KEY_PASSWORD)."
+            exit 1
+          else
+            echo "::error::No APK found at expected paths."
+            exit 1
+          fi
+          DEST="app/build/outputs/apk/release/androTrack-${VERSION}.apk"
+          mv "$APK_SOURCE" "$DEST"
+          echo "apk_path=$DEST" >> "$GITHUB_OUTPUT"
 
       - name: Create and push tag
         run: |
@@ -88,4 +99,5 @@ jobs:
           name: ${{ steps.version.outputs.version }}
           draft: true
           generate_release_notes: true
-          files: ${{ steps.rename.outputs.apk_path }}
+          files: |
+            ${{ steps.rename.outputs.apk_path }}
