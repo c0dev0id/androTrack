@@ -13,8 +13,7 @@ data class AppSettings(
     val emulatePower: Boolean = false,
     val sensorRecording: Boolean = true,
     val updateIntervalSec: Float = 0.2f,
-    val minDistanceM: Float = 0f,
-    val maxAccuracyM: Float = 20f
+    val minDistanceM: Float = 0f
 )
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,8 +27,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         emulatePower = prefs.getBoolean("pref_emulate_power", false),
         sensorRecording = prefs.getBoolean("pref_sensor_recording", true),
         updateIntervalSec = prefs.getFloat("pref_update_interval_sec", 0.2f),
-        minDistanceM = prefs.getFloat("pref_min_distance_m", 0f),
-        maxAccuracyM = prefs.getFloat("pref_max_accuracy_m", 20f)
+        minDistanceM = prefs.getFloat("pref_min_distance_m", 0f)
     )
 
     fun updateSettings(new: AppSettings) {
@@ -38,7 +36,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             .putBoolean("pref_sensor_recording", new.sensorRecording)
             .putFloat("pref_update_interval_sec", new.updateIntervalSec)
             .putFloat("pref_min_distance_m", new.minDistanceM)
-            .putFloat("pref_max_accuracy_m", new.maxAccuracyM)
             .apply()
         _settings.value = new
 
