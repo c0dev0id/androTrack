@@ -110,25 +110,6 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel = viewModel()) {
                             )
                         }
                     )
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
-
-                    // Max accuracy
-                    var accProgress by remember(settings.maxAccuracyM) {
-                        mutableStateOf(settings.maxAccuracyM / 100f)
-                    }
-                    val accValue = (accProgress * 100f).toInt()
-                    SliderRow(
-                        label = "Max accuracy filter",
-                        valueLabel = if (accValue == 0) "Off" else "${accValue} m",
-                        value = accProgress,
-                        onValueChange = { accProgress = it },
-                        onValueChangeFinished = {
-                            settingsViewModel.updateSettings(
-                                settings.copy(maxAccuracyM = accValue.toFloat())
-                            )
-                        }
-                    )
                 }
             }
 
